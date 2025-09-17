@@ -1,0 +1,488 @@
+{
+  "info": {
+    "name": "Enhanced EKYC API v2.0",
+    "description": "Complete EKYC API collection với liveness detection, OCR, và simple face matching",
+    "version": "2.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Enhanced EKYC",
+      "description": "Complete EKYC verification APIs với đầy đủ tính năng",
+      "item": [
+        {
+          "name": "Complete EKYC Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "selfie_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh selfie (required)"
+                },
+                {
+                  "key": "id_front_image",
+                  "type": "file", 
+                  "src": [],
+                  "description": "Ảnh mặt trước CCCD (required)"
+                },
+                {
+                  "key": "id_back_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh mặt sau CCCD (optional)"
+                },
+                {
+                  "key": "liveness_video",
+                  "type": "file",
+                  "src": [],
+                  "description": "Video 3s cho liveness detection (optional)"
+                },
+                {
+                  "key": "session_id",
+                  "type": "text",
+                  "value": "{{$randomUUID}}",
+                  "description": "Session ID (auto-generated if not provided)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/verify-complete",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "verify-complete"]
+            },
+            "description": "Complete EKYC verification với liveness detection, OCR, quality assessment và face matching"
+          }
+        },
+        {
+          "name": "Liveness Detection Only",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image_or_video",
+                  "type": "file",
+                  "src": [],
+                  "description": "Image hoặc video file cho liveness detection"
+                },
+                {
+                  "key": "session_id",
+                  "type": "text",
+                  "value": "{{$randomUUID}}",
+                  "description": "Session ID (optional)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/verify-liveness-only",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "verify-liveness-only"]
+            },
+            "description": "Chỉ thực hiện liveness detection từ ảnh hoặc video"
+          }
+        },
+        {
+          "name": "OCR ID Card Information",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "id_front_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh mặt trước CCCD"
+                },
+                {
+                  "key": "id_back_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh mặt sau CCCD (optional)"
+                },
+                {
+                  "key": "session_id",
+                  "type": "text",
+                  "value": "{{$randomUUID}}",
+                  "description": "Session ID (optional)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/extract-id-info",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "extract-id-info"]
+            },
+            "description": "Trích xuất thông tin từ CCCD sử dụng OCR"
+          }
+        },
+        {
+          "name": "Image Quality Assessment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Image để đánh giá chất lượng"
+                },
+                {
+                  "key": "image_type",
+                  "type": "text",
+                  "value": "selfie",
+                  "description": "Loại ảnh: 'selfie' hoặc 'id_card'"
+                },
+                {
+                  "key": "session_id",
+                  "type": "text",
+                  "value": "{{$randomUUID}}",
+                  "description": "Session ID (optional)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/assess-image-quality",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "assess-image-quality"]
+            },
+            "description": "Đánh giá chất lượng ảnh (selfie hoặc CCCD)"
+          }
+        },
+        {
+          "name": "Face Matching (Complete)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "selfie_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh selfie"
+                },
+                {
+                  "key": "id_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh CCCD"
+                },
+                {
+                  "key": "session_id",
+                  "type": "text",
+                  "value": "{{$randomUUID}}",
+                  "description": "Session ID (optional)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/face-match",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "face-match"]
+            },
+            "description": "Face matching với full pipeline (có thể bao gồm liveness check nếu được config)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Simple Face Matching",
+      "description": "API face matching đơn giản không có liveness detection",
+      "item": [
+        {
+          "name": "Face Match Simple - Basic",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "selfie_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh selfie (required)"
+                },
+                {
+                  "key": "id_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh CCCD/ID (required)"
+                },
+                {
+                  "key": "session_id",
+                  "type": "text",
+                  "value": "{{$randomUUID}}",
+                  "description": "Session ID (auto-generated if not provided)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/face-match-simple",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "face-match-simple"]
+            },
+            "description": "✅ Basic face matching\n❌ NO liveness detection\n❌ NO OCR\n✅ Quality assessment"
+          }
+        },
+        {
+          "name": "Face Match Simple - Skip Quality Check",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept", 
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "selfie_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh selfie (required)"
+                },
+                {
+                  "key": "id_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh CCCD/ID (required)"
+                },
+                {
+                  "key": "session_id",
+                  "type": "text",
+                  "value": "{{$randomUUID}}",
+                  "description": "Session ID"
+                },
+                {
+                  "key": "skip_quality_check",
+                  "type": "text",
+                  "value": "true",
+                  "description": "Bỏ qua kiểm tra chất lượng ảnh"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/face-match-simple",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "face-match-simple"]
+            },
+            "description": "Face matching nhanh nhất - chỉ so sánh khuôn mặt"
+          }
+        },
+        {
+          "name": "Face Match Simple - Detailed Analysis",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "selfie_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh selfie (required)"
+                },
+                {
+                  "key": "id_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh CCCD/ID (required)"
+                },
+                {
+                  "key": "session_id",
+                  "type": "text",
+                  "value": "{{$randomUUID}}",
+                  "description": "Session ID"
+                },
+                {
+                  "key": "return_detailed_analysis",
+                  "type": "text",
+                  "value": "true",
+                  "description": "Trả về phân tích chi tiết"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/face-match-simple",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "face-match-simple"]
+            },
+            "description": "Face matching với phân tích chi tiết (age, gender, landmarks, etc.)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Verification Status",
+      "description": "APIs để theo dõi trạng thái verification",
+      "item": [
+        {
+          "name": "Get Verification Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/verification-status/{{session_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "verification-status", "{{session_id}}"]
+            },
+            "description": "Lấy trạng thái verification theo session ID"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health & Monitoring",
+      "description": "Health check và monitoring endpoints",
+      "item": [
+        {
+          "name": "Health Check - Enhanced EKYC",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "health"]
+            },
+            "description": "Kiểm tra tình trạng hoạt động của Enhanced EKYC services"
+          }
+        },
+        {
+          "name": "Health Check - Main App",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Kiểm tra tình trạng tổng thể của application"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "description": "Base URL của Enhanced EKYC API"
+    },
+    {
+      "key": "session_id",
+      "value": "",
+      "description": "Session ID để track verification (sẽ được set tự động)"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-generate session_id if not exists",
+          "if (!pm.collectionVariables.get('session_id')) {",
+          "    const uuid = require('uuid');",
+          "    pm.collectionVariables.set('session_id', uuid.v4());",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test", 
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-extract session_id from response",
+          "if (pm.response.code === 200) {",
+          "    try {",
+          "        const response = pm.response.json();",
+          "        if (response.data && response.data.session_id) {",
+          "            pm.collectionVariables.set('session_id', response.data.session_id);",
+          "            console.log('Session ID extracted: ' + response.data.session_id);",
+          "        }",
+          "    } catch(e) {",
+          "        console.log('Could not extract session_id from response');",
+          "    }",
+          "}",
+          "",
+          "// Basic response validation",
+          "pm.test('Response has correct structure', function () {",
+          "    const response = pm.response.json();",
+          "    pm.expect(response).to.have.property('status');",
+          "    pm.expect(response).to.have.property('message');",
+          "});"
+        ]
+      }
+    }
+  ]
+}

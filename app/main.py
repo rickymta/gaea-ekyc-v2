@@ -4,6 +4,7 @@ import logging
 from app.config import settings
 from app.database import create_tables
 from app.routers import auth, sessions, assets, monitoring, training, ekyc_verification
+from app.api import enhanced_ekyc
 
 # Logging setup
 logging.basicConfig(
@@ -49,6 +50,14 @@ Dịch vụ xác minh danh tính điện tử (eKYC) sử dụng AI và xử lý
             "description": "Đăng nhập và quản lý JWT tokens"
         },
         {
+            "name": "Enhanced EKYC",
+            "description": "🔥 Complete EKYC verification với liveness detection, OCR và quality assessment"
+        },
+        {
+            "name": "Simple Face Matching", 
+            "description": "👤 Simple face matching API không có liveness detection - phù hợp cho verification cơ bản"
+        },
+        {
             "name": "EKYC Sessions", 
             "description": "Quản lý sessions xác minh danh tính"
         },
@@ -87,6 +96,9 @@ app.include_router(assets.router, prefix="/api/v1")
 app.include_router(monitoring.router, prefix="/api/v1")
 app.include_router(training.router, prefix="/api/v1")
 app.include_router(ekyc_verification.router, prefix="/api/v1")
+
+# Include Enhanced EKYC router
+app.include_router(enhanced_ekyc.router)
 
 
 @app.on_event("startup")
