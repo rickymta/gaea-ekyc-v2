@@ -1,0 +1,375 @@
+{
+  "info": {
+    "name": "EKYC Service API",
+    "description": "Postman collection cho EKYC Service API - Dịch vụ xác minh danh tính điện tử",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "session_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🏥 Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        },
+        "description": "Kiểm tra trạng thái service"
+      },
+      "response": []
+    },
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Lưu access token vào biến môi trường",
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('access_token', response.access_token);",
+                  "    console.log('Access token saved:', response.access_token);",
+                  "} else {",
+                  "    console.log('Login failed');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "user_id",
+                  "value": "testuser",
+                  "description": "User ID mặc định"
+                },
+                {
+                  "key": "password",
+                  "value": "testpassword",
+                  "description": "Mật khẩu mặc định"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "Đăng nhập và nhận JWT token\n\n**Thông tin mặc định:**\n- Username: testuser\n- Password: testpassword"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "user_id",
+                      "value": "testuser"
+                    },
+                    {
+                      "key": "password",
+                      "value": "testpassword"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/v1/auth/login",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "v1", "auth", "login"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"token_type\": \"bearer\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "📋 EKYC Sessions",
+      "item": [
+        {
+          "name": "Create Session",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Lưu session_id vào biến môi trường",
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('session_id', response.id);",
+                  "    console.log('Session ID saved:', response.id);",
+                  "} else {",
+                  "    console.log('Create session failed');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"user_id\": \"testuser\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/sessions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "sessions"]
+            },
+            "description": "Tạo session EKYC mới cho user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Session Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/sessions/{{session_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "sessions", "{{session_id}}"]
+            },
+            "description": "Lấy chi tiết session và kết quả xác minh"
+          },
+          "response": []
+        },
+        {
+          "name": "List Sessions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/sessions?page=1&page_size=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "sessions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Trang hiện tại"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10",
+                  "description": "Số lượng sessions mỗi trang"
+                },
+                {
+                  "key": "status_filter",
+                  "value": "",
+                  "description": "Lọc theo status (pending/in_progress/completed/failed)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Danh sách sessions của user hiện tại"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📎 File Upload",
+      "item": [
+        {
+          "name": "Upload ID Document (Front Only)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "front_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh mặt trước CMND/CCCD (JPG/PNG, max 10MB)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/sessions/{{session_id}}/id-document",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "sessions", "{{session_id}}", "id-document"]
+            },
+            "description": "Upload ảnh mặt trước CMND/CCCD\n\n**Yêu cầu:**\n- Format: JPG, JPEG, PNG\n- Dung lượng: Tối đa 10MB\n- Chất lượng tốt, không bị mờ"
+          },
+          "response": []
+        },
+        {
+          "name": "Upload ID Document (Front + Back)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "front_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh mặt trước CMND/CCCD"
+                },
+                {
+                  "key": "back_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh mặt sau CMND/CCCD"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/sessions/{{session_id}}/id-document",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "sessions", "{{session_id}}", "id-document"]
+            },
+            "description": "Upload ảnh cả hai mặt CMND/CCCD"
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Selfie",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "selfie_image",
+                  "type": "file",
+                  "src": [],
+                  "description": "Ảnh selfie (JPG/PNG, max 10MB)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ekyc/sessions/{{session_id}}/selfie",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ekyc", "sessions", "{{session_id}}", "selfie"]
+            },
+            "description": "Upload ảnh selfie để xác minh\n\n**Lưu ý:**\n- Phải upload CMND trước\n- Ảnh rõ mặt, ánh sáng tốt\n- Không đeo khẩu trang, kính đen"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📊 Monitoring",
+      "item": [
+        {
+          "name": "Get Task Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tasks", "{{task_id}}"],
+              "variable": [
+                {
+                  "key": "task_id",
+                  "value": "",
+                  "description": "ID của Celery task"
+                }
+              ]
+            },
+            "description": "Kiểm tra trạng thái xử lý của background task"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global pre-request script",
+          "console.log('Making request to:', pm.request.url.toString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script",
+          "console.log('Response status:', pm.response.status);",
+          "console.log('Response time:', pm.response.responseTime + 'ms');"
+        ]
+      }
+    }
+  ]
+}
